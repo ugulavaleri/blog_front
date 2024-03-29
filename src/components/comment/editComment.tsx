@@ -35,6 +35,8 @@ function EditComment() {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
+			toast.success("Comment edited successfully!");
+			navigate("/");
 		} catch (error: any) {
 			if (error.request.status === 403) {
 				return toast.warning("Forbidden to edit comment!");
