@@ -3,6 +3,7 @@ import { AuthContext } from "../../GlobalContext/AuthContext/authContext";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { BASE_URL } from "../../helpers/api";
+import { toast } from "react-toastify";
 
 function Create() {
 	const [title, setTitle] = useState("");
@@ -10,7 +11,8 @@ function Create() {
 	const { accessToken, currentUser } = useContext(AuthContext) || {};
 	const navigate = useNavigate();
 
-	const handleCreateBlogPost = async () => {
+	const handleCreateBlogPost = async (e: any) => {
+		e.preventDefault();
 		if (!currentUser) {
 			return navigate("/login");
 		}
@@ -18,11 +20,18 @@ function Create() {
 			title: title,
 			body: body,
 		};
-		const response = await axios.post(`${BASE_URL}/blogPosts`, data, {
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
+		try {
+			await axios.post(`${BASE_URL}/blogPosts`, data, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			navigate("/");
+			toast.success("Blog post created successfully!");
+		} catch (error: any) {
+			console.log(error);
+			toast.warning("something went wrong");
+		}
 	};
 
 	return (

@@ -3,10 +3,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { BASE_URL } from "../../helpers/api";
 import { AuthContext } from "../../GlobalContext/AuthContext/authContext";
+import { toast } from "react-toastify";
 
 function Edit() {
 	const [title, setTitle] = useState("");
 	const [body, setBody] = useState("");
+	const [publishDate, setPublishDate] = useState("");
 	const { accessToken, currentUser } = useContext(AuthContext) || {};
 	const navigate = useNavigate();
 
@@ -20,30 +22,48 @@ function Edit() {
 
 		setTitle(response.data.data.title);
 		setBody(response.data.data.body);
+		setPublishDate(response.data.data.publish_date.split(" ")[0]);
 	};
 
 	useEffect(() => {
 		fetchSingleBlogPost();
 	}, []);
 
-	const handleSubmit = (e: any) => {
+	const handleUpdatePost = async (e: any) => {
 		e.preventDefault();
 		const data = {
 			title: title,
 			body: body,
+			publish_date: publishDate,
 		};
-		axios.put(`${BASE_URL}/blogPosts/${id}`, data, {
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
+		try {
+			await axios.put(`${BASE_URL}/blogPosts/${id}`, data, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			toast.success("Blog post edited successfully!");
+			navigate("/");
+		} catch (error: any) {
+			console.log(error);
+			if (error.request.status === 403) {
+				return toast.warning("Forbidden to edit post!");
+			}
+			toast.warning("Something went wrong!");
+		}
 	};
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-100">
 			<div className="w-full max-w-2xl p-8 bg-white rounded-lg shadow-md">
 				<h2 className="text-2xl font-semibold text-center mb-6">Edit Post</h2>
-				<form onSubmit={handleSubmit} className="space-y-6">
+				<form onSubmit={handleUpdatePost} className="space-y-6">
+					<div>
+						<label htmlFor="title" className="block text-sm font-medium text-gray-700">
+							Publish Date
+						</label>
+						<input type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
+					</div>
 					<div>
 						<label htmlFor="title" className="block text-sm font-medium text-gray-700">
 							Title

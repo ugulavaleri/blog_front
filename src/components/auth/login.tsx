@@ -5,6 +5,7 @@ import { BASE_URL } from "../../helpers/api";
 import axios from "axios";
 import Spinner from "../../helpers/spinner";
 import Validation from "../../helpers/validation";
+import { toast } from "react-toastify";
 
 function Login() {
 	const { accessToken, setAccessToken, setCurrentUser } = useContext(AuthContext) || {};
@@ -39,13 +40,14 @@ function Login() {
 			setPassword("");
 			navigate("/");
 			setLoading(false);
+			toast.success("Loggined successfully!");
 		} catch (error: ErrorResponse | any) {
 			setLoading(false);
 			if (error.response.status === 422) {
 				setErrors(error.response.data.errors);
 			}
 			if (error.response.status === 401) {
-				setErrors(error.response.data);
+				setErrors({ password: error.response.data.error });
 			}
 		}
 	};
@@ -93,7 +95,7 @@ function Login() {
 								type="submit"
 								className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 							>
-								Submit
+								Login
 							</button>
 						)}
 					</div>

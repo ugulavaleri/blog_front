@@ -1,9 +1,10 @@
 export default function Validation(errors: any, field: string) {
-	return (
-		errors[field]?.length && (
-			<div>
-				<div className="alert alert-danger">{errors[field]}</div>
+	if (errors[field]) {
+		return (
+			<div className="mt-2">
+				<div className="text-red-500">{errors[field]}</div>
 			</div>
-		)
-	);
+		);
+	}
+	return null;
 }

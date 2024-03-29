@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../helpers/api";
 import { AuthContext } from "../GlobalContext/AuthContext/authContext";
+import { toast } from "react-toastify";
 
 function Header() {
 	const { currentUser, accessToken, setCurrentUser, setAccessToken } = useContext(AuthContext) || {};
@@ -24,6 +25,7 @@ function Header() {
 			setCurrentUser && setCurrentUser(null);
 			setAccessToken && setAccessToken("");
 			navigate("/");
+			toast.success("Log out successfully!");
 		} catch (error) {
 			console.log(error);
 		}

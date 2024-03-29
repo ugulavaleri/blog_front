@@ -5,6 +5,7 @@ import { BASE_URL } from "../../helpers/api";
 import Validation from "../../helpers/validation";
 import { AuthContext } from "../../GlobalContext/AuthContext/authContext";
 import Spinner from "../../helpers/spinner";
+import { toast } from "react-toastify";
 
 function Registration() {
 	const { accessToken, setAccessToken, setCurrentUser } = useContext(AuthContext) || {};
@@ -41,15 +42,16 @@ function Registration() {
 			setPassword("");
 			navigate("/");
 			setLoading(false);
+			toast.success("Registered successfully!");
 		} catch (error: ErrorResponse | any) {
 			setErrors(true);
 			setLoading(false);
+			console.log(error);
 			if (error.response.status === 422) {
 				setErrors(error.response.data.errors);
 			}
 		}
 	};
-	console.log(role);
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -68,7 +70,7 @@ function Registration() {
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 						/>
-						{Validation(errors, "name")}
+						{Validation("123", "name")}
 					</div>
 					<div className="mb-4">
 						<label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -110,7 +112,7 @@ function Registration() {
 							<option value="User">User</option>
 							<option value="Editor">Editor</option>
 						</select>
-						{Validation(errors, "password")}
+						{Validation(errors, "role")}
 					</div>
 					<div className="flex justify-center">
 						{isLoading ? (
@@ -120,7 +122,7 @@ function Registration() {
 								type="submit"
 								className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-white rounded-md"
 							>
-								Submit
+								Register
 							</button>
 						)}
 					</div>
